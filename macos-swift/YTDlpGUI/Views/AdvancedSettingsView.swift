@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Mirrors `init_advanced_panel` in yt_dlp_gui_wx.py: proxy settings,
-/// browser cookies, and the ignore-errors / geo-bypass toggles.
+/// Mirrors `init_advanced_panel` in yt_dlp_gui_wx.py: proxy settings and
+/// browser cookies. (The ignore-errors / geo-bypass toggles were removed —
+/// testing showed they had no real effect.)
 struct AdvancedSettingsView: View {
     @ObservedObject var options: DownloadOptions
 
@@ -51,14 +52,6 @@ struct AdvancedSettingsView: View {
                             .frame(width: 150)
                         }
                         .disabled(!options.useCookies)
-                    }
-                    .padding(8)
-                }
-
-                GroupBox("Other Options") {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Toggle("Ignore Download Errors and Continue", isOn: $options.ignoreErrors)
-                        Toggle("Try to Bypass Geo Restrictions", isOn: $options.geoBypass)
                     }
                     .padding(8)
                 }

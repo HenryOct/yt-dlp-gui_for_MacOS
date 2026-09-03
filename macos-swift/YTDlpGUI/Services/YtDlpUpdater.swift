@@ -9,8 +9,9 @@ import Foundation
 /// the actual blocking `Process` calls run inside `Task.detached` so they
 /// never block the UI.
 enum YtDlpUpdater {
+    /// Returned so callers can surface the outcome in the UI, not just the log.
     @MainActor
-    static func update(pythonPath: String, log: @escaping (String, Bool) -> Void) async {
+    static func update(pythonPath: String, log: @escaping (String, Bool) -> Void) async -> (success: Bool, message: String) {
         log("🔄 Updating yt-dlp and yt-dlp[default]...", false)
 
         async let result1 = runPipUpgrade(pythonPath: pythonPath, package: "yt-dlp")
@@ -19,17 +20,28 @@ enum YtDlpUpdater {
         let (success1, error1) = await result1
         let (success2, error2) = await result2
 
+        let success: Bool
+        let message: String
         switch (success1, success2) {
         case (true, true):
-            log("✅ yt-dlp and yt-dlp[default] updated successfully!", false)
+            success = true
+            message = "yt-dlp and yt-dlp[default] updated successfully!"
+            log("✅ \(message)", false)
         case (true, false):
-            log("❌ yt-dlp[default] update failed: \(error2 ?? "")", true)
+            success = false
+            message = "yt-dlp[default] update failed: \(error2 ?? "")"
+            log("❌ \(message)", true)
         case (false, true):
-            log("❌ yt-dlp update failed: \(error1 ?? "")", true)
+            success = false
+            message = "yt-dlp update failed: \(error1 ?? "")"
+            log("❌ \(message)", true)
         case (false, false):
+            success = false
+            message = "yt-dlp update failed: \(error1 ?? ""); yt-dlp[default] update failed: \(error2 ?? "")"
             log("❌ yt-dlp update failed: \(error1 ?? "")", true)
             log("❌ yt-dlp[default] update failed: \(error2 ?? "")", true)
         }
+        return (success, message)
     }
 
     private static func runPipUpgrade(pythonPath: String, package: String) async -> (Bool, String?) {

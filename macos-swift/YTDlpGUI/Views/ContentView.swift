@@ -46,6 +46,7 @@ struct ContentView: View {
                 options: options,
                 logStore: logStore,
                 downloadRunner: downloadRunner,
+                dependencyManager: dependencyManager,
                 invocation: invocation,
                 progressText: $progressText,
                 progressFraction: $progressFraction

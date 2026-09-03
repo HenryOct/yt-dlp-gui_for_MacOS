@@ -69,9 +69,6 @@ final class DownloadOptions: ObservableObject {
     @Published var useCookies: Bool = false
     @Published var browser: BrowserChoice = .chrome
 
-    @Published var ignoreErrors: Bool = false
-    @Published var geoBypass: Bool = false
-
     /// Builds the yt-dlp argument list (excluding the base command / URL),
     /// matching `on_start_download` in yt_dlp_gui_wx.py line-for-line.
     func buildArguments() -> [String] {
@@ -96,14 +93,6 @@ final class DownloadOptions: ObservableObject {
 
         if useCookies {
             args += ["--cookies-from-browser", browser.rawValue]
-        }
-
-        if ignoreErrors {
-            args.append("--ignore-errors")
-        }
-
-        if geoBypass {
-            args.append("--geo-bypass")
         }
 
         args += ["--js-runtimes", "node"]

@@ -8,8 +8,9 @@ import Foundation
 /// the actual blocking `Process` call runs inside `Task.detached` so it
 /// never blocks the UI.
 enum FormatChecker {
+    /// Returned so callers can surface a summary in the UI, not just the log.
     @MainActor
-    static func check(invocation: YtDlpInvocation, url: String, log: @escaping (String, Bool) -> Void) async {
+    static func check(invocation: YtDlpInvocation, url: String, log: @escaping (String, Bool) -> Void) async -> (success: Bool, message: String) {
         log("🔍 Checking available formats...", false)
 
         let command = invocation.baseCommand + ["--list-formats", url]
@@ -38,14 +39,20 @@ enum FormatChecker {
 
         if let text = result.output {
             log("📋 Available formats:", false)
+            var formatLineCount = 0
             for line in text.split(separator: "\n", omittingEmptySubsequences: false) {
                 let trimmed = line.trimmingCharacters(in: CharacterSet.whitespaces)
                 if !trimmed.isEmpty {
                     log(String(line), false)
+                    formatLineCount += 1
                 }
             }
+            let message = "Found \(formatLineCount) format line(s) — see Log tab for details"
+            return (true, message)
         } else {
-            log("❌ Format check failed: \(result.errorText ?? "unknown error")", true)
+            let message = "Format check failed: \(result.errorText ?? "unknown error")"
+            log("❌ \(message)", true)
+            return (false, message)
         }
     }
 }

@@ -1,0 +1,4 @@
+macos-swift/build/
+__pycache__/
+*.pyc
+.DS_Store

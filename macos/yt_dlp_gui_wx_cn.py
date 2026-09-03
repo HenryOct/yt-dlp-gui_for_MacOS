@@ -425,18 +425,6 @@ class MainPanel(scrolled.ScrolledPanel):
         cookies_sizer.Add(browser_sizer, 0, wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
         sizer.Add(cookies_sizer, 0, wx.EXPAND | wx.ALL, 5)
         
-        # 其他选项
-        options_box = wx.StaticBox(self.advanced_panel, label="其他选项")
-        options_sizer = wx.StaticBoxSizer(options_box, wx.VERTICAL)
-        
-        self.ignore_errors_check = wx.CheckBox(self.advanced_panel, label="忽略下载错误继续")
-        options_sizer.Add(self.ignore_errors_check, 0, wx.ALL, 5)
-        
-        self.geo_bypass_check = wx.CheckBox(self.advanced_panel, label="尝试绕过地理限制")
-        options_sizer.Add(self.geo_bypass_check, 0, wx.ALL, 5)
-        
-        sizer.Add(options_sizer, 0, wx.EXPAND | wx.ALL, 5)
-        
         self.advanced_panel.SetSizer(sizer)
     
     def init_log_panel(self):
@@ -667,13 +655,6 @@ class MainPanel(scrolled.ScrolledPanel):
         if self.use_cookies_check.GetValue():
             browser = self.browser_choice.GetStringSelection()
             cmd.extend(['--cookies-from-browser', browser])
-        
-        # 添加其他选项
-        if self.ignore_errors_check.GetValue():
-            cmd.append('--ignore-errors')
-        
-        if self.geo_bypass_check.GetValue():
-            cmd.append('--geo-bypass')
         
         # 添加URL
         cmd.append(url)

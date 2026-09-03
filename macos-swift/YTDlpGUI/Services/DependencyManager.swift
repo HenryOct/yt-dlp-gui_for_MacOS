@@ -37,6 +37,7 @@ enum SetupNeed {
 final class DependencyManager: ObservableObject {
     @Published private(set) var isReady = false
     @Published private(set) var failureReason: String?
+    @Published private(set) var ytDlpVersion: String?
 
     private static let pythonMissingReason = "未检测到 Python 3 / Python 3 not found\n\n请先安装 Python 3（例如通过 Homebrew: brew install python，或前往 python.org 下载），然后重新打开本应用。\nPlease install Python 3 first (e.g. via Homebrew: brew install python, or from python.org), then reopen this app."
 
@@ -65,6 +66,7 @@ final class DependencyManager: ObservableObject {
             if let version = await Self.runVersionCheck(command: command) {
                 log("✅ yt-dlp installed: \(version)", false)
                 isReady = true
+                ytDlpVersion = version
                 return .ready(YtDlpInvocation(pythonPath: venvPython, baseCommand: command))
             }
         }
@@ -104,6 +106,7 @@ final class DependencyManager: ObservableObject {
         if let version = await Self.runVersionCheck(command: command) {
             log("✅ yt-dlp installed: \(version)", false)
             isReady = true
+            ytDlpVersion = version
             return YtDlpInvocation(pythonPath: venvPython, baseCommand: command)
         }
 
@@ -118,7 +121,13 @@ final class DependencyManager: ObservableObject {
 
         command = PythonEnvironment.ytDlpCommand(venvDir: venvDir)
         isReady = true
+        ytDlpVersion = await Self.runVersionCheck(command: command)
         return YtDlpInvocation(pythonPath: venvPython, baseCommand: command)
+    }
+
+    /// Re-checks the installed version, e.g. after "Update yt-dlp" runs.
+    func refreshVersion(invocation: YtDlpInvocation) async {
+        ytDlpVersion = await Self.runVersionCheck(command: invocation.baseCommand)
     }
 
     private func installYtDlp(venvPython: String, source: PackageSource, log: @escaping (String, Bool) -> Void) async -> Bool {
