@@ -5,7 +5,7 @@
 # source to rebuild and reinstall.
 set -euo pipefail
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/macos-swift"
 
 echo "==> Regenerating Xcode project..."
 xcodegen generate

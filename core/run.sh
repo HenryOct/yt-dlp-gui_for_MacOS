@@ -37,6 +37,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Starting yt-dlp GUI (wxPython version)..."
-# Enter macos directory and run GUI program
-cd "$PROJECT_ROOT/macos"
+# Enter core directory and run GUI program
+cd "$PROJECT_ROOT/core"
 "$VENV_PYTHON" yt_dlp_gui_wx.py
