@@ -1,0 +1,12 @@
+{
+  "/Users/henry/pyvirtual/yt-dlp-gui_forMac copy/macos-swift/YTDlpGUI/Views/AdvancedSettingsView.swift" : {
+    "abi-baseline-json" : "/Users/henry/pyvirtual/yt-dlp-gui_forMac copy/macos-swift/build/Build/Intermediates.noindex/YTDlpGUI.build/Release/YTDlpGUI.build/Objects-normal/arm64/yt_dlp_GUI.abi.json",
+    "const-values" : "/Users/henry/pyvirtual/yt-dlp-gui_forMac copy/macos-swift/build/Build/Intermediates.noindex/YTDlpGUI.build/Release/YTDlpGUI.build/Objects-normal/arm64/YTDlpGUI-primary.swiftconstvalues",
+    "dependencies" : "/Users/henry/pyvirtual/yt-dlp-gui_forMac copy/macos-swift/build/Build/Intermediates.noindex/YTDlpGUI.build/Release/YTDlpGUI.build/Objects-normal/arm64/YTDlpGUI-primary.d",
+    "diagnostics" : "/Users/henry/pyvirtual/yt-dlp-gui_forMac copy/macos-swift/build/Build/Intermediates.noindex/YTDlpGUI.build/Release/YTDlpGUI.build/Objects-normal/arm64/YTDlpGUI-primary.dia",
+    "objc-header" : "/Users/henry/pyvirtual/yt-dlp-gui_forMac copy/macos-swift/build/Build/Intermediates.noindex/YTDlpGUI.build/Release/YTDlpGUI.build/Objects-normal/arm64/yt_dlp_GUI-Swift.h",
+    "swiftdoc" : "/Users/henry/pyvirtual/yt-dlp-gui_forMac copy/macos-swift/build/Build/Intermediates.noindex/YTDlpGUI.build/Release/YTDlpGUI.build/Objects-normal/arm64/yt_dlp_GUI.swiftdoc",
+    "swiftmodule" : "/Users/henry/pyvirtual/yt-dlp-gui_forMac copy/macos-swift/build/Build/Intermediates.noindex/YTDlpGUI.build/Release/YTDlpGUI.build/Objects-normal/arm64/yt_dlp_GUI.swiftmodule",
+    "swiftsourceinfo" : "/Users/henry/pyvirtual/yt-dlp-gui_forMac copy/macos-swift/build/Build/Intermediates.noindex/YTDlpGUI.build/Release/YTDlpGUI.build/Objects-normal/arm64/yt_dlp_GUI.swiftsourceinfo"
+  }
+}
