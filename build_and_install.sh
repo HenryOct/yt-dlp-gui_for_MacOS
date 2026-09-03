@@ -7,8 +7,11 @@ set -euo pipefail
 
 cd "$(dirname "$0")/macos-swift"
 
-echo "==> Regenerating Xcode project..."
-xcodegen generate
+if [ ! -f "YTDlpGUI.xcodeproj/project.pbxproj" ]; then
+  echo "YTDlpGUI.xcodeproj is missing. If you edited project.yml, regenerate it with:" >&2
+  echo "  brew install xcodegen && xcodegen generate" >&2
+  exit 1
+fi
 
 BUILD_DIR="$(pwd)/build"
 rm -rf "$BUILD_DIR"
