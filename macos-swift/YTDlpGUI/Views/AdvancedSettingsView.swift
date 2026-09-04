@@ -8,57 +8,83 @@ struct AdvancedSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                GroupBox("Proxy Settings") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Toggle("Enable Proxy", isOn: $options.useProxy)
+            VStack(alignment: .leading, spacing: 18) {
+                Text("Advanced")
+                    .font(.system(size: 22, weight: .bold))
+                    .padding(.top, 2)
 
-                        HStack {
-                            Text("Type:")
-                            Picker("", selection: $options.proxyType) {
-                                ForEach(ProxyType.allCases) { type in
-                                    Text(type.rawValue).tag(type)
-                                }
-                            }
+                SectionCard(title: "Proxy") {
+                    SectionRow {
+                        Image(systemName: "network")
+                            .foregroundStyle(Color.accentColor)
+                        Text("Enable Proxy")
+                        Spacer()
+                        Toggle("", isOn: $options.useProxy)
                             .labelsHidden()
-                            .frame(width: 100)
-
-                            Text("Host:")
-                            TextField("", text: $options.proxyHost)
-                                .textFieldStyle(.roundedBorder)
-
-                            Text("Port:")
-                            TextField("", text: $options.proxyPort)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: 80)
-                        }
-                        .disabled(!options.useProxy)
+                            .toggleStyle(.switch)
                     }
-                    .padding(8)
+
+                    SectionRow(showDivider: false) {
+                        Text("Server")
+                            .frame(width: 90, alignment: .leading)
+                        Picker("", selection: $options.proxyType) {
+                            ForEach(ProxyType.allCases) { type in
+                                Text(type.rawValue).tag(type)
+                            }
+                        }
+                        .labelsHidden()
+                        .frame(width: 90)
+
+                        TextField("Host", text: $options.proxyHost)
+                            .textFieldStyle(.roundedBorder)
+
+                        Text(":")
+                            .foregroundStyle(.secondary)
+
+                        TextField("Port", text: $options.proxyPort)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 64)
+                    }
+                    .disabled(!options.useProxy)
+                    .opacity(options.useProxy ? 1 : 0.5)
                 }
 
-                GroupBox("Browser Cookies") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Toggle("Use Browser Cookies", isOn: $options.useCookies)
-
-                        HStack {
-                            Text("Browser:")
-                            Picker("", selection: $options.browser) {
-                                ForEach(BrowserChoice.allCases) { browser in
-                                    Text(browser.rawValue).tag(browser)
-                                }
-                            }
+                SectionCard(title: "Browser Cookies") {
+                    SectionRow {
+                        Image(systemName: "person.crop.circle")
+                            .foregroundStyle(Color.accentColor)
+                        Text("Use Browser Cookies")
+                        Spacer()
+                        Toggle("", isOn: $options.useCookies)
                             .labelsHidden()
-                            .frame(width: 150)
-                        }
-                        .disabled(!options.useCookies)
+                            .toggleStyle(.switch)
                     }
-                    .padding(8)
+
+                    SectionRow(showDivider: false) {
+                        Text("Browser")
+                            .frame(width: 90, alignment: .leading)
+                        Picker("", selection: $options.browser) {
+                            ForEach(BrowserChoice.allCases) { browser in
+                                Text(browser.rawValue).tag(browser)
+                            }
+                        }
+                        .labelsHidden()
+                        .frame(width: 160)
+                        Spacer()
+                    }
+                    .disabled(!options.useCookies)
+                    .opacity(options.useCookies ? 1 : 0.5)
                 }
+
+                Text("Proxy and cookie settings apply only to this app's downloads.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 2)
 
                 Spacer()
             }
-            .padding()
+            .padding(20)
         }
+        .background(Color(nsColor: .windowBackgroundColor))
     }
 }
