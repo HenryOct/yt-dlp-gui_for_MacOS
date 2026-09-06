@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// Top-level container: shows a first-run `OnboardingView` while setup is
-/// pending, then the main tab interface (Basic Settings / Advanced Settings
-/// / Log, mirroring the wx.Notebook in yt_dlp_gui_wx.py) once ready.
+/// pending, then the main sidebar interface (Download / Advanced / Log,
+/// styled after macOS System Settings / Finder) once ready.
 struct ContentView: View {
     @StateObject private var options = DownloadOptions()
     @StateObject private var logStore = LogStore()
@@ -16,9 +16,11 @@ struct ContentView: View {
     @State private var setupStage: SetupStage = .checking
     @State private var pendingSystemPython: String = ""
 
+    @State private var selection: SidebarItem? = .download
+
     var body: some View {
         ZStack {
-            mainTabs
+            mainSplit
                 .opacity(isReady ? 1 : 0)
                 .disabled(!isReady)
 
@@ -34,31 +36,42 @@ struct ContentView: View {
                 )
             }
         }
-        .padding()
         .task {
             await runInitialCheck()
         }
     }
 
-    private var mainTabs: some View {
-        TabView {
-            BasicSettingsView(
-                options: options,
-                logStore: logStore,
-                downloadRunner: downloadRunner,
-                dependencyManager: dependencyManager,
-                invocation: invocation,
-                progressText: $progressText,
-                progressFraction: $progressFraction
-            )
-            .tabItem { Label("Basic Settings", systemImage: "arrow.down.circle") }
-
-            AdvancedSettingsView(options: options)
-                .tabItem { Label("Advanced Settings", systemImage: "slider.horizontal.3") }
-
-            LogView(logStore: logStore)
-                .tabItem { Label("Log", systemImage: "doc.plaintext") }
+    private var mainSplit: some View {
+        NavigationSplitView {
+            List(selection: $selection) {
+                ForEach(SidebarItem.allCases) { item in
+                    Label(item.title, systemImage: item.systemImage)
+                        .tag(item)
+                }
+            }
+            .listStyle(.sidebar)
+            .navigationSplitViewColumnWidth(200)
+        } detail: {
+            Group {
+                switch selection ?? .download {
+                case .download:
+                    BasicSettingsView(
+                        options: options,
+                        logStore: logStore,
+                        downloadRunner: downloadRunner,
+                        dependencyManager: dependencyManager,
+                        invocation: invocation,
+                        progressText: $progressText,
+                        progressFraction: $progressFraction
+                    )
+                case .advanced:
+                    AdvancedSettingsView(options: options)
+                case .log:
+                    LogView(logStore: logStore)
+                }
+            }
         }
+        .navigationSplitViewStyle(.balanced)
     }
 
     private var isReady: Bool {

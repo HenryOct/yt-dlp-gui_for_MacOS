@@ -55,9 +55,14 @@ struct OnboardingView: View {
 
     private var choosingSourceView: some View {
         VStack(spacing: 16) {
-            Image(systemName: "shippingbox")
-                .font(.system(size: 40))
-                .foregroundStyle(.secondary)
+            ZStack {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Color.accentColor.opacity(0.1))
+                    .frame(width: 56, height: 56)
+                Image(systemName: "shippingbox")
+                    .font(.system(size: 24, weight: .medium))
+                    .foregroundStyle(Color.accentColor)
+            }
 
             Text("首次运行需要安装 yt-dlp\nFirst run needs to install yt-dlp")
                 .font(.title3.bold())
@@ -78,6 +83,7 @@ struct OnboardingView: View {
             Button("继续 / Continue") {
                 onChooseSource(selectedSource)
             }
+            .buttonStyle(.borderedProminent)
             .keyboardShortcut(.defaultAction)
         }
         .frame(maxWidth: 420)
@@ -101,6 +107,7 @@ struct OnboardingView: View {
             Text(reason)
                 .multilineTextAlignment(.center)
             Button("重试 / Retry") { onRetry() }
+                .buttonStyle(.bordered)
         }
         .frame(maxWidth: 420)
     }
@@ -120,12 +127,12 @@ struct OnboardingView: View {
             }
             .padding(10)
             .background(
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(selectedSource == source ? Color.accentColor.opacity(0.12) : Color.clear)
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(selectedSource == source ? Color.accentColor.opacity(0.1) : Color(nsColor: .controlBackgroundColor))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(selectedSource == source ? Color.accentColor : Color.secondary.opacity(0.3), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .strokeBorder(selectedSource == source ? Color.accentColor : Color(nsColor: .separatorColor).opacity(0.6), lineWidth: selectedSource == source ? 1.5 : 1)
             )
         }
         .buttonStyle(.plain)

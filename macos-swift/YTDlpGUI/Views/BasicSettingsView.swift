@@ -3,7 +3,8 @@ import AppKit
 
 /// Mirrors `init_basic_panel` in yt_dlp_gui_wx.py: URL field, download path
 /// + Browse, format picker + custom format, Start/Stop/Update buttons,
-/// and progress display.
+/// and progress display. Laid out as grouped, inset cards (macOS System
+/// Settings style) inside a light content background.
 struct BasicSettingsView: View {
     @ObservedObject var options: DownloadOptions
     @ObservedObject var logStore: LogStore
@@ -28,94 +29,122 @@ struct BasicSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                GroupBox("Video URL") {
-                    TextField("Enter YouTube or other video website URL...", text: $options.url)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(8)
-                }
+            VStack(alignment: .leading, spacing: 18) {
+                Text("Download")
+                    .font(.system(size: 22, weight: .bold))
+                    .padding(.top, 2)
 
-                GroupBox("Download Path") {
-                    HStack {
-                        TextField("Download path", text: $options.savePath)
-                            .textFieldStyle(.roundedBorder)
-                        Button("Browse") { browseForFolder() }
+                SectionCard(title: "Video URL") {
+                    SectionRow(showDivider: false) {
+                        Image(systemName: "link")
+                            .foregroundStyle(.secondary)
+                        TextField("Paste a YouTube or other video URL…", text: $options.url)
+                            .textFieldStyle(.plain)
                     }
-                    .padding(8)
                 }
 
-                GroupBox("Video Quality") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("Format:")
-                            Picker("", selection: $options.formatPreset) {
-                                ForEach(FormatPreset.allCases) { preset in
-                                    Text(preset.displayName).tag(preset)
-                                }
-                            }
-                            .labelsHidden()
+                SectionCard(title: "Download Location") {
+                    SectionRow(showDivider: false) {
+                        Image(systemName: "folder")
+                            .foregroundStyle(Color.accentColor)
+                        Text(options.savePath)
+                            .lineLimit(1)
+                            .truncationMode(.middle)
+                        Spacer()
+                        Button("Choose…") { browseForFolder() }
+                    }
+                }
 
-                            Button("Check Available Formats") { checkFormats() }
-                                .disabled(isCheckingFormats || invocation == nil)
-                            if isCheckingFormats {
-                                ProgressView().controlSize(.small)
+                SectionCard(title: "Video Quality") {
+                    SectionRow {
+                        Text("Format")
+                            .frame(width: 90, alignment: .leading)
+                        Picker("", selection: $options.formatPreset) {
+                            ForEach(FormatPreset.allCases) { preset in
+                                Text(preset.displayName).tag(preset)
                             }
                         }
+                        .labelsHidden()
+                    }
 
-                        HStack {
-                            Text("Custom:")
-                            TextField("", text: $options.customFormat)
-                                .textFieldStyle(.roundedBorder)
-                                .disabled(options.formatPreset != .custom)
+                    SectionRow {
+                        Text("Custom")
+                            .frame(width: 90, alignment: .leading)
+                            .foregroundStyle(options.formatPreset == .custom ? .primary : .secondary)
+                        TextField("", text: $options.customFormat)
+                            .textFieldStyle(.roundedBorder)
+                            .disabled(options.formatPreset != .custom)
+                    }
+
+                    SectionRow(showDivider: false) {
+                        Button("Check Available Formats") { checkFormats() }
+                            .disabled(isCheckingFormats || invocation == nil)
+                        if isCheckingFormats {
+                            ProgressView().controlSize(.small)
                         }
-
                         if let formatCheckStatus {
                             StatusBanner(success: formatCheckStatus.success, message: formatCheckStatus.message)
                         }
+                        Spacer()
                     }
-                    .padding(8)
                 }
 
-                HStack {
-                    Button("Start Download") { startDownload() }
-                        .disabled(downloadRunner.isRunning || invocation == nil)
+                HStack(spacing: 10) {
+                    Button {
+                        startDownload()
+                    } label: {
+                        Label("Start Download", systemImage: "arrow.down.circle")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.regular)
+                    .disabled(downloadRunner.isRunning || invocation == nil)
 
-                    Button("Stop Download") { downloadRunner.stop() }
+                    Button("Stop") { downloadRunner.stop() }
+                        .buttonStyle(.bordered)
                         .disabled(!downloadRunner.isRunning)
 
                     Spacer()
 
                     VStack(alignment: .trailing, spacing: 2) {
-                        Button("Update yt-dlp") { updateYtDlp() }
-                            .disabled(isUpdating || invocation == nil)
+                        Button {
+                            updateYtDlp()
+                        } label: {
+                            Label("Update yt-dlp", systemImage: "arrow.triangle.2.circlepath")
+                        }
+                        .buttonStyle(.bordered)
+                        .disabled(isUpdating || invocation == nil)
+
                         if let version = dependencyManager.ytDlpVersion {
                             Text("Current: \(version)")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
-                .padding(.vertical, 8)
 
                 if isUpdating {
                     HStack(spacing: 6) {
                         ProgressView().controlSize(.small)
                         Text("Updating yt-dlp…")
                             .font(.callout)
-                            .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
                     }
                 } else if let updateStatus {
                     StatusBanner(success: updateStatus.success, message: updateStatus.message)
                 }
 
-                GroupBox("Download Progress") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        if let current = playlistCurrent, let total = playlistTotal, total > 1 {
-                            Text("Playlist item \(current) of \(total)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                SectionCard(title: "Progress") {
+                    VStack(alignment: .leading, spacing: 9) {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(progressText)
+                                .font(.system(size: 13))
+                            Spacer()
+                            if let current = playlistCurrent, let total = playlistTotal, total > 1 {
+                                Text("Playlist item \(current) of \(total)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
-                        Text(progressText)
                         if let fraction = progressFraction {
                             ProgressView(value: fraction)
                         } else if downloadRunner.isRunning {
@@ -124,11 +153,12 @@ struct BasicSettingsView: View {
                             ProgressView(value: 0)
                         }
                     }
-                    .padding(8)
+                    .padding(14)
                 }
             }
-            .padding()
+            .padding(20)
         }
+        .background(Color(nsColor: .windowBackgroundColor))
     }
 
     private func browseForFolder() {
@@ -258,23 +288,5 @@ struct BasicSettingsView: View {
         alert.messageText = title
         alert.informativeText = message
         alert.runModal()
-    }
-}
-
-/// Compact inline result indicator, used so outcomes (update result, format
-/// check result) are visible directly in the Basic Settings tab instead of
-/// only in the Log tab.
-private struct StatusBanner: View {
-    let success: Bool
-    let message: String
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 6) {
-            Image(systemName: success ? "checkmark.circle.fill" : "xmark.circle.fill")
-                .foregroundColor(success ? .green : .red)
-            Text(message)
-                .font(.callout)
-                .foregroundColor(success ? .primary : .red)
-        }
     }
 }
