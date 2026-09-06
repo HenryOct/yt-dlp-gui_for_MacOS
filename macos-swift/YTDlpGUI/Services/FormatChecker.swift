@@ -19,6 +19,7 @@ enum FormatChecker {
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
             process.arguments = command
+            process.environment = JsRuntimeEnvironment.subprocessEnvironment()
             let outPipe = Pipe()
             let errPipe = Pipe()
             process.standardOutput = outPipe

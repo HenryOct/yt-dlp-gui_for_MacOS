@@ -15,8 +15,9 @@
 		3660F6B86465F329AF5E8C5F /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D723ECDC40DDB194F4DE12 /* OnboardingView.swift */; };
 		45734CD38B4F72AEAE4127EB /* PythonEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 558B46018BA2A804E5EF9762 /* PythonEnvironment.swift */; };
 		8D2A1BB3223FFE3A01805247 /* BasicSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF61EDD2C6F759A4E282639 /* BasicSettingsView.swift */; };
-		1A2B3C4D5E6F708192A3B4C5 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C6 /* Components.swift */; };
+		92C1C8C180D5CCB7A510C0BC /* JsRuntimeEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23C8BAFF40DE41C98373410A /* JsRuntimeEnvironment.swift */; };
 		94564F84B92A9FBB7BDA201D /* FormatChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857BB9F42B2D36433539BA22 /* FormatChecker.swift */; };
+		9A614C42B751F5259F7EDD3E /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1933AD9D793725D3ABAA5017 /* Components.swift */; };
 		9B146D950ADB51E36E110673 /* AdvancedSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDE1D8EEFD1FB5E4CCFF2AB /* AdvancedSettingsView.swift */; };
 		9C15131AFDF2EAD7BCC4E767 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88FDD85CB82E3DE80159D63 /* ContentView.swift */; };
 		B72FDF95E3640E04B11D7586 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D319A6EA7E94A401D337ED6E /* LogView.swift */; };
@@ -26,11 +27,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1933AD9D793725D3ABAA5017 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		23BC057C99262B7B3DAE9D65 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		23C8BAFF40DE41C98373410A /* JsRuntimeEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsRuntimeEnvironment.swift; sourceTree = "<group>"; };
 		25E6DA50A7FA47BD4EBB2CD3 /* DownloadRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadRunner.swift; sourceTree = "<group>"; };
 		2DDE1D8EEFD1FB5E4CCFF2AB /* AdvancedSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsView.swift; sourceTree = "<group>"; };
 		2EF61EDD2C6F759A4E282639 /* BasicSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicSettingsView.swift; sourceTree = "<group>"; };
-		1A2B3C4D5E6F708192A3B4C6 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		558B46018BA2A804E5EF9762 /* PythonEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PythonEnvironment.swift; sourceTree = "<group>"; };
 		857BB9F42B2D36433539BA22 /* FormatChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatChecker.swift; sourceTree = "<group>"; };
 		8F54036354FEE374C97A5908 /* YTDlpGUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTDlpGUIApp.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				A867E9037B8BC909294152AE /* DownloadOptions.swift */,
+				23C8BAFF40DE41C98373410A /* JsRuntimeEnvironment.swift */,
 				B5F32B29A5E8675346CEAFCF /* LogStore.swift */,
 				A69DC92DE6DF2B03A1DAB44C /* PackageSource.swift */,
 				558B46018BA2A804E5EF9762 /* PythonEnvironment.swift */,
@@ -71,7 +74,7 @@
 			children = (
 				2DDE1D8EEFD1FB5E4CCFF2AB /* AdvancedSettingsView.swift */,
 				2EF61EDD2C6F759A4E282639 /* BasicSettingsView.swift */,
-				1A2B3C4D5E6F708192A3B4C6 /* Components.swift */,
+				1933AD9D793725D3ABAA5017 /* Components.swift */,
 				F88FDD85CB82E3DE80159D63 /* ContentView.swift */,
 				D319A6EA7E94A401D337ED6E /* LogView.swift */,
 				B7D723ECDC40DDB194F4DE12 /* OnboardingView.swift */,
@@ -183,12 +186,13 @@
 			files = (
 				9B146D950ADB51E36E110673 /* AdvancedSettingsView.swift in Sources */,
 				8D2A1BB3223FFE3A01805247 /* BasicSettingsView.swift in Sources */,
-				1A2B3C4D5E6F708192A3B4C5 /* Components.swift in Sources */,
+				9A614C42B751F5259F7EDD3E /* Components.swift in Sources */,
 				9C15131AFDF2EAD7BCC4E767 /* ContentView.swift in Sources */,
 				F7B56F10EB9F7C88F8F800D5 /* DependencyManager.swift in Sources */,
 				1007E7FC25834C689151BB23 /* DownloadOptions.swift in Sources */,
 				20E3E6754D29925A6FB17758 /* DownloadRunner.swift in Sources */,
 				94564F84B92A9FBB7BDA201D /* FormatChecker.swift in Sources */,
+				92C1C8C180D5CCB7A510C0BC /* JsRuntimeEnvironment.swift in Sources */,
 				B76D04D5CA15A62965B64934 /* LogStore.swift in Sources */,
 				B72FDF95E3640E04B11D7586 /* LogView.swift in Sources */,
 				3660F6B86465F329AF5E8C5F /* OnboardingView.swift in Sources */,

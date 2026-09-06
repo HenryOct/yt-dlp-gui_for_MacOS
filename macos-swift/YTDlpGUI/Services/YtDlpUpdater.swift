@@ -1,8 +1,7 @@
 import Foundation
 
 /// Mirrors `on_update_ytdlp` in yt_dlp_gui_wx.py: runs
-/// `pip install -U yt-dlp` and `pip install -U yt-dlp[default]` and reports
-/// on both independently.
+/// `pip install -U yt-dlp[default]`.
 ///
 /// `update` is `@MainActor`-isolated so calling it always hops onto the main
 /// actor before touching `log` (which mutates an `@Published` `LogStore`);
@@ -12,34 +11,17 @@ enum YtDlpUpdater {
     /// Returned so callers can surface the outcome in the UI, not just the log.
     @MainActor
     static func update(pythonPath: String, log: @escaping (String, Bool) -> Void) async -> (success: Bool, message: String) {
-        log("🔄 Updating yt-dlp and yt-dlp[default]...", false)
+        log("🔄 Updating yt-dlp[default]...", false)
 
-        async let result1 = runPipUpgrade(pythonPath: pythonPath, package: "yt-dlp")
-        async let result2 = runPipUpgrade(pythonPath: pythonPath, package: "yt-dlp[default]")
+        let (success, error) = await runPipUpgrade(pythonPath: pythonPath, package: "yt-dlp[default]")
 
-        let (success1, error1) = await result1
-        let (success2, error2) = await result2
-
-        let success: Bool
         let message: String
-        switch (success1, success2) {
-        case (true, true):
-            success = true
-            message = "yt-dlp and yt-dlp[default] updated successfully!"
+        if success {
+            message = "yt-dlp[default] updated successfully!"
             log("✅ \(message)", false)
-        case (true, false):
-            success = false
-            message = "yt-dlp[default] update failed: \(error2 ?? "")"
+        } else {
+            message = "yt-dlp[default] update failed: \(error ?? "")"
             log("❌ \(message)", true)
-        case (false, true):
-            success = false
-            message = "yt-dlp update failed: \(error1 ?? "")"
-            log("❌ \(message)", true)
-        case (false, false):
-            success = false
-            message = "yt-dlp update failed: \(error1 ?? ""); yt-dlp[default] update failed: \(error2 ?? "")"
-            log("❌ yt-dlp update failed: \(error1 ?? "")", true)
-            log("❌ yt-dlp[default] update failed: \(error2 ?? "")", true)
         }
         return (success, message)
     }

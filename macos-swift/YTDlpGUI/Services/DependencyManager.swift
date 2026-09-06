@@ -38,6 +38,7 @@ final class DependencyManager: ObservableObject {
     @Published private(set) var isReady = false
     @Published private(set) var failureReason: String?
     @Published private(set) var ytDlpVersion: String?
+    @Published private(set) var jsRuntimeWarning: String?
 
     private static let pythonMissingReason = "未检测到 Python 3 / Python 3 not found\n\n请先安装 Python 3（例如通过 Homebrew: brew install python，或前往 python.org 下载），然后重新打开本应用。\nPlease install Python 3 first (e.g. via Homebrew: brew install python, or from python.org), then reopen this app."
 
@@ -67,6 +68,13 @@ final class DependencyManager: ObservableObject {
                 log("✅ yt-dlp installed: \(version)", false)
                 isReady = true
                 ytDlpVersion = version
+
+                if let runtime = JsRuntimeEnvironment.resolveExistingRuntime() {
+                    log("✅ JS runtime found: \(runtime)", false)
+                } else {
+                    log("⚠️ No JS runtime (Deno/Node.js) found — some sites may fail to download.", true)
+                }
+
                 return .ready(YtDlpInvocation(pythonPath: venvPython, baseCommand: command))
             }
         }
@@ -107,6 +115,7 @@ final class DependencyManager: ObservableObject {
             log("✅ yt-dlp installed: \(version)", false)
             isReady = true
             ytDlpVersion = version
+            await ensureJsRuntime(log: log, onStatus: onStatus)
             return YtDlpInvocation(pythonPath: venvPython, baseCommand: command)
         }
 
@@ -122,7 +131,18 @@ final class DependencyManager: ObservableObject {
         command = PythonEnvironment.ytDlpCommand(venvDir: venvDir)
         isReady = true
         ytDlpVersion = await Self.runVersionCheck(command: command)
+
+        await ensureJsRuntime(log: log, onStatus: onStatus)
+
         return YtDlpInvocation(pythonPath: venvPython, baseCommand: command)
+    }
+
+    private func ensureJsRuntime(log: @escaping (String, Bool) -> Void, onStatus: @escaping (String) -> Void) async {
+        onStatus("正在检查 JavaScript 运行时… / Checking JavaScript runtime…")
+        let jsOutcome = await JsRuntimeEnvironment.ensureRuntime(log: log)
+        if case .skipped(let reason) = jsOutcome {
+            jsRuntimeWarning = reason
+        }
     }
 
     /// Re-checks the installed version, e.g. after "Update yt-dlp" runs.
@@ -139,13 +159,13 @@ final class DependencyManager: ObservableObject {
         // Best-effort pip upgrade; a stale bundled pip can fail modern installs.
         _ = await Self.runPip(pythonPath: venvPython, args: ["install", "--upgrade", "pip"], indexURL: source.pipIndexURL)
 
-        let (success, errorText) = await Self.runPip(pythonPath: venvPython, args: ["install", "yt-dlp"], indexURL: source.pipIndexURL)
+        let (success, errorText) = await Self.runPip(pythonPath: venvPython, args: ["install", "yt-dlp[default]"], indexURL: source.pipIndexURL)
         if success {
-            log("✅ yt-dlp installed successfully", false)
+            log("✅ yt-dlp[default] installed successfully", false)
             return true
         }
 
-        log("❌ Command failed: \(venvPython) -m pip install yt-dlp", true)
+        log("❌ Command failed: \(venvPython) -m pip install yt-dlp[default]", true)
         if let errorText, !errorText.isEmpty {
             log("Error output: \(errorText)", true)
         }

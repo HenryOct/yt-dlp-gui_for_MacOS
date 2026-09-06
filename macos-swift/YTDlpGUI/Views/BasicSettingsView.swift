@@ -34,6 +34,10 @@ struct BasicSettingsView: View {
                     .font(.system(size: 22, weight: .bold))
                     .padding(.top, 2)
 
+                if let warning = dependencyManager.jsRuntimeWarning {
+                    StatusBanner(success: false, message: warning)
+                }
+
                 SectionCard(title: "Video URL") {
                     SectionRow(showDivider: false) {
                         Image(systemName: "link")

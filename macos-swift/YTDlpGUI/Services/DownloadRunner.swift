@@ -30,6 +30,7 @@ final class DownloadRunner: ObservableObject {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
         process.arguments = fullCommand
+        process.environment = JsRuntimeEnvironment.subprocessEnvironment()
 
         let pipe = Pipe()
         process.standardOutput = pipe
